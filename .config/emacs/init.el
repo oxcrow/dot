@@ -120,6 +120,7 @@
 ;; advanced configuration
 ;;
 
+(electric-pair-mode 1) ; auto complete pairs of () [] etc.
 (setq gc-cons-threshold (* 50 1000 1000)) ; delay garbage collector
 (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy))) ; use fuzzy search [critical]
 
@@ -136,6 +137,8 @@
 
 (evil-global-set-key 'motion "j" 'evil-next-visual-line)
 (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+(define-key evil-normal-state-map (kbd "a") 'evil-append-line)
+(define-key evil-normal-state-map (kbd "s") 'swiper)
 
 (evil-leader/set-leader "<SPC>")
 (evil-leader/set-key
