@@ -2,6 +2,8 @@
 ;; basic configuration
 ;;
 
+(load-theme 'leuven)
+
 ;; kill annoying ui elements
 (menu-bar-mode -1) ; disable menu bar
 (tooltip-mode -1) ; disable tool tips
@@ -102,6 +104,13 @@
 
 (use-package fill-column-indicator
   :config (global-display-fill-column-indicator-mode))
+
+(use-package lsp-mode
+  :hook (rust-mode . lsp-deferred)
+  :commands (lsp lsp-deferred))
+
+(use-package company
+  :after lsp-mode)
 
 (use-package rust-mode
   :mode "\\.rs\\'"
