@@ -97,6 +97,9 @@
   :after evil
   :config (global-evil-leader-mode))
 
+(use-package avy
+  :after evil)
+
 (use-package which-key
   :defer 3
   :diminish which-key-mode
@@ -145,6 +148,7 @@
 (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 (define-key evil-normal-state-map (kbd "a") 'evil-append-line)
 (define-key evil-normal-state-map (kbd "s") 'swiper)
+(define-key evil-normal-state-map (kbd ",") 'avy-goto-word-1)
 
 (evil-leader/set-leader "<SPC>")
 (evil-leader/set-key
