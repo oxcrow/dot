@@ -91,7 +91,10 @@
   :config (ivy-prescient-mode 1))
 
 (use-package evil
-  :config (evil-mode 1))
+  :init
+  (setq evil-want-C-u-scroll t)
+  :config
+  (evil-mode 1))
 
 (use-package evil-leader
   :after evil
@@ -114,11 +117,14 @@
   (setq highlight-indent-guides-method 'character))
 
 (use-package lsp-mode
-  :hook (rust-mode . lsp-deferred)
+  :hook ((rust-mode c-mode c++-mode) . lsp-deferred)
   :commands (lsp lsp-deferred))
 
 (use-package company
   :after lsp-mode)
+
+(use-package format-all
+  :commands (format-all-buffer format-all-buffers))
 
 (use-package rust-mode
   :mode "\\.rs\\'"
