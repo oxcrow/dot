@@ -17,13 +17,13 @@
 ;; kill useless and annoying buffers
 (defun remove-scratch-buffer ()
   (if (get-buffer "*scratch*")
-    (kill-buffer "*scratch*")))
+      (kill-buffer "*scratch*")))
 (defun remove-message-buffer ()
   (if (get-buffer "*Messages*")
-    (kill-buffer "*Messages*")))
+      (kill-buffer "*Messages*")))
 (defun remove-compile-buffer ()
   (if (get-buffer "*Async-native-compile-log*")
-    (kill-buffer "*Async-native-compile-log*")))
+      (kill-buffer "*Async-native-compile-log*")))
 ;;
 (setq initial-scratch-message "") ; clear scratch buffer
 (setq-default message-log-max nil) ; clear message buffer
@@ -34,9 +34,10 @@
 ;; analyze startup performance
 ;; since we killed the message buffer we don't see the message
 (defun efs/display-startup-time ()
-  (message "Emacs started in %s."
-    (format "%.2f seconds"
-      (float-time (time-subtract after-init-time before-init-time)))))
+  (message
+   "Emacs started in %s."
+   (format "%.2f seconds"
+	   (float-time (time-subtract after-init-time before-init-time)))))
 ;;
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
@@ -45,10 +46,9 @@
 ;;
 
 (require 'package)
-(setq package-archives
-  '(("melpa" . "https://melpa.org/packages/")
-    ("org" . "https://orgmode.org/elpa/")
-    ("elpa" . "https://elpa.gnu.org/packages/")))
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			 ("org" . "https://orgmode.org/elpa/")
+			 ("elpa" . "https://elpa.gnu.org/packages/")))
 
 (package-initialize)
 (unless package-archive-contents
@@ -59,20 +59,19 @@
 
 (use-package ivy
   :diminish
-  :bind
-   (("<f4>" . swiper)
-    :map ivy-minibuffer-map
-    ("TAB" . ivy-alt-done)
-    ("C-l" . ivy-alt-done)
-    ("C-j" . ivy-next-line)
-    ("C-k" . ivy-previous-line)
-    :map ivy-switch-buffer-map
-    ("C-k" . ivy-previous-line)
-    ("C-l" . ivy-done)
-    ("C-d" . ivy-switch-buffer-kill)
-    :map ivy-reverse-i-search-map
-    ("C-k" . ivy-previous-line)
-    ("C-d" . ivy-reverse-i-search-kill))
+  :bind (("<f4>" . swiper)
+	 :map ivy-minibuffer-map
+	 ("TAB" . ivy-alt-done)
+	 ("C-l" . ivy-alt-done)
+	 ("C-j" . ivy-next-line)
+	 ("C-k" . ivy-previous-line)
+	 :map ivy-switch-buffer-map
+	 ("C-k" . ivy-previous-line)
+	 ("C-l" . ivy-done)
+	 ("C-d" . ivy-switch-buffer-kill)
+	 :map ivy-reverse-i-search-map
+	 ("C-k" . ivy-previous-line)
+	 ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1))
 
@@ -126,14 +125,12 @@
 (use-package format-all
   :commands (format-all-buffer format-all-buffers)
   :config
-  (setq-default format-all-formatters
-		'(("C" (clang-format))
-		  ("C++" (clang-format))
-		  ("Rust" (rustfmt)))))
+  (setq-default format-all-formatters '(("C" (clang-format))
+					("C++" (clang-format))
+					("Rust" (rustfmt)))))
 
 (use-package rust-mode
-  :mode "\\.rs\\'"
-  :config (setq rust-format-on-save t))
+  :mode "\\.rs\\'")
 
 ;;
 ;; advanced configuration
