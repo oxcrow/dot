@@ -124,7 +124,12 @@
   :after lsp-mode)
 
 (use-package format-all
-  :commands (format-all-buffer format-all-buffers))
+  :commands (format-all-buffer format-all-buffers)
+  :config
+  (setq-default format-all-formatters
+		'(("C" (clang-format))
+		  ("C++" (clang-format))
+		  ("Rust" (rustfmt)))))
 
 (use-package rust-mode
   :mode "\\.rs\\'"
@@ -144,7 +149,7 @@
 ;;
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-(global-set-key (kbd "<f2>") (lambda() (interactive)(save-buffer)(evil-normal-state)))
+(global-set-key (kbd "<f2>") (lambda() (interactive)(evil-normal-state)(format-all-buffer)(save-buffer)))
 (global-set-key (kbd "<f7>") 'previous-buffer)
 (global-set-key (kbd "<f8>") 'next-buffer)
 (global-set-key (kbd "<f9>") 'execute-extended-command)
@@ -159,9 +164,10 @@
 (evil-leader/set-leader "<SPC>")
 (evil-leader/set-key
   "s" 'swiper
-  "f" 'find-file
+  "f" 'format-all-buffer
   "w" 'switch-to-buffer
-  "k" 'kill-buffer)
+  "k" 'kill-buffer
+  "o" 'find-file)
 
 ;; what the hecc is this?
 (custom-set-variables
