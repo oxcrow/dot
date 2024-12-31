@@ -105,6 +105,11 @@
 (use-package fill-column-indicator
   :config (global-display-fill-column-indicator-mode))
 
+(use-package highlight-indent-guides
+  :hook ((prog-mode) . (highlight-indent-guides))
+  :config
+  (setq highlight-indent-guides-method 'character))
+
 (use-package lsp-mode
   :hook (rust-mode . lsp-deferred)
   :commands (lsp lsp-deferred))
@@ -121,6 +126,7 @@
 ;;
 
 (electric-pair-mode 1) ; auto complete pairs of () [] etc.
+(set-terminal-coding-system 'utf-8) ; utf-8 rendering support
 (setq gc-cons-threshold (* 50 1000 1000)) ; delay garbage collector
 (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy))) ; use fuzzy search [critical]
 
