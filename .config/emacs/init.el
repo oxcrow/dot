@@ -4,15 +4,15 @@
 
 (load-theme 'leuven)
 
-;; kill annoying ui elements
-(menu-bar-mode -1) ; disable menu bar
-(tooltip-mode -1) ; disable tool tips
-(setq make-backup-files nil) ; disable backup files
-
 ;; set line numbers
 (column-number-mode) ; show column number in mode line
 (global-display-line-numbers-mode 1) ; show line numbers in all buffers
 (setq display-line-numbers-type 'relative) ; show relative line numbers
+
+;; set indentation
+(setq-default indent-tabs-mode nil) ; always use spaces instead of tabs for indentation everywhere posible
+(setq-default tab-width 4) ; use 4 spaces per tabs everywhere possible
+(defvaralias 'c-basic-offset 'tab-width) ; set tabwidth for c like languages
 
 ;; kill useless and annoying buffers
 (defun remove-scratch-buffer ()
@@ -37,7 +37,7 @@
   (message
    "Emacs started in %s."
    (format "%.2f seconds"
-	   (float-time (time-subtract after-init-time before-init-time)))))
+           (float-time (time-subtract after-init-time before-init-time)))))
 ;;
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
@@ -47,8 +47,8 @@
 
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org" . "https://orgmode.org/elpa/")
-			 ("elpa" . "https://elpa.gnu.org/packages/")))
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
 
 (package-initialize)
 (unless package-archive-contents
@@ -60,18 +60,18 @@
 (use-package ivy
   :diminish
   :bind (("<f4>" . swiper)
-	 :map ivy-minibuffer-map
-	 ("TAB" . ivy-alt-done)
-	 ("C-l" . ivy-alt-done)
-	 ("C-j" . ivy-next-line)
-	 ("C-k" . ivy-previous-line)
-	 :map ivy-switch-buffer-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-l" . ivy-done)
-	 ("C-d" . ivy-switch-buffer-kill)
-	 :map ivy-reverse-i-search-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-d" . ivy-reverse-i-search-kill))
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1))
 
@@ -103,11 +103,12 @@
   :after evil)
 
 (use-package which-key
-  :defer 3
+  :defer 1
   :diminish which-key-mode
   :config (which-key-mode)(setq which-idle-key-delay 1))
 
 (use-package fill-column-indicator
+  :defer 1
   :config (global-display-fill-column-indicator-mode))
 
 (use-package highlight-indent-guides
@@ -126,29 +127,52 @@
   :commands (format-all-buffer format-all-buffers)
   :config
   (setq-default format-all-formatters '(("C" (clang-format))
-					("C++" (clang-format))
-					("Rust" (rustfmt)))))
+                                        ("C++" (clang-format))
+                                        ("Rust" (rustfmt)))))
 
 (use-package rust-mode
   :mode "\\.rs\\'")
 
 ;;
+;; hooks
+;;
+
+(add-hook 'lsp-mode-hook (setq lsp-headerline-breadcrumb-enable nil)) ; disable lsp breadcrumb header
+
+;;
 ;; advanced configuration
 ;;
+
+;; kill annoying ui elements
+(menu-bar-mode -1) ; disable menu bar
+(tooltip-mode -1) ; disable tool tips
+(setq make-backup-files nil) ; disable backup files
+
+;; save history
+(recentf-mode 1) ; save history of recently openend files
+(savehist-mode 1) ; save history of recently used commands
+(save-place-mode 1) ; save location of last cursor location
 
 (electric-pair-mode 1) ; auto complete pairs of () [] etc.
 (set-terminal-coding-system 'utf-8) ; utf-8 rendering support
 (setq gc-cons-threshold (* 50 1000 1000)) ; delay garbage collector
 (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy))) ; use fuzzy search [critical]
 
+(set-frame-parameter (selected-frame) 'buffer-predicate #'buffer-file-name) ; only cycle through file buffers
+
+;; reload buffers
+(global-auto-revert-mode 1) ; reload file buffers when the file changes on disk
+(setq global-auto-revert-non-file-buffers t) ; reload dired buffers if files changes on disk
+
 ;;
 ;; key bindings
 ;;
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-(global-set-key (kbd "<f2>") (lambda() (interactive)(evil-normal-state)(format-all-buffer)(save-buffer)))
+(global-set-key (kbd "<f2>") (lambda() (interactive)(evil-normal-state)(save-buffer)))
 (global-set-key (kbd "<f7>") 'previous-buffer)
 (global-set-key (kbd "<f8>") 'next-buffer)
+(global-set-key (kbd "S-<f8>") 'kill-this-buffer)
 (global-set-key (kbd "<f9>") 'execute-extended-command)
 (global-set-key (kbd "<f12>") 'kill-emacs)
 
