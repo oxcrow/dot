@@ -14,23 +14,6 @@
 (setq-default tab-width 4) ; use 4 spaces per tabs everywhere possible
 (defvaralias 'c-basic-offset 'tab-width) ; set tabwidth for c like languages
 
-;; kill useless and annoying buffers
-(defun remove-scratch-buffer ()
-  (if (get-buffer "*scratch*")
-      (kill-buffer "*scratch*")))
-(defun remove-message-buffer ()
-  (if (get-buffer "*Messages*")
-      (kill-buffer "*Messages*")))
-(defun remove-compile-buffer ()
-  (if (get-buffer "*Async-native-compile-log*")
-      (kill-buffer "*Async-native-compile-log*")))
-;;
-(setq initial-scratch-message "") ; clear scratch buffer
-(setq-default message-log-max nil) ; clear message buffer
-(add-hook 'after-change-major-mode-hook 'remove-scratch-buffer)
-(add-hook 'after-change-major-mode-hook 'remove-compile-buffer)
-(add-hook 'after-change-major-mode-hook 'remove-message-buffer)
-
 ;; analyze startup performance
 ;; since we killed the message buffer we don't see the message
 (defun efs/display-startup-time ()
@@ -56,6 +39,8 @@
 
 (require 'use-package)
 (setq use-package-always-ensure t)
+
+(use-package no-littering)
 
 (use-package ivy
   :diminish
@@ -148,6 +133,11 @@
 (tooltip-mode -1) ; disable tool tips
 (setq make-backup-files nil) ; disable backup files
 
+;; kill annoying behavhiors
+(setq make-backup-files nil) ; disable backup files
+(setq auto-save-default nil) ; disable autosave files
+(setq create-lockfiles nil) ; disable lock files
+
 ;; save history
 (recentf-mode 1) ; save history of recently openend files
 (savehist-mode 1) ; save history of recently used commands
@@ -163,6 +153,23 @@
 ;; reload buffers
 (global-auto-revert-mode 1) ; reload file buffers when the file changes on disk
 (setq global-auto-revert-non-file-buffers t) ; reload dired buffers if files changes on disk
+
+;; kill useless and annoying buffers
+(defun remove-scratch-buffer ()
+  (if (get-buffer "*scratch*")
+      (kill-buffer "*scratch*")))
+(defun remove-message-buffer ()
+  (if (get-buffer "*Messages*")
+      (kill-buffer "*Messages*")))
+(defun remove-compile-buffer ()
+  (if (get-buffer "*Async-native-compile-log*")
+      (kill-buffer "*Async-native-compile-log*")))
+;;
+(setq initial-scratch-message "") ; clear scratch buffer
+(setq-default message-log-max nil) ; clear message buffer
+(add-hook 'after-change-major-mode-hook 'remove-scratch-buffer)
+(add-hook 'after-change-major-mode-hook 'remove-message-buffer)
+(add-hook 'after-change-major-mode-hook 'remove-compile-buffer)
 
 ;;
 ;; key bindings
