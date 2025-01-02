@@ -112,8 +112,9 @@
   :hook ((rust-mode c-mode c++-mode) . lsp-deferred)
   :commands (lsp lsp-deferred))
 
-(use-package company
-  :after lsp-mode)
+(use-package corfu
+  :after lsp-mode
+  :config (global-corfu-mode))
 
 (use-package format-all
   :commands (format-all-buffer format-all-buffers)
