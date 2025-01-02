@@ -14,6 +14,8 @@
 (setq-default tab-width 4) ; use 4 spaces per tabs everywhere possible
 (defvaralias 'c-basic-offset 'tab-width) ; set tabwidth for c like languages
 
+(setq tab-always-indent 'complete) ; enable auto-completion by pressing tab
+
 ;; analyze startup performance
 ;; since we killed the message buffer we don't see the message
 (defun efs/display-startup-time ()
@@ -152,7 +154,6 @@
 
 (electric-pair-mode 1) ; auto complete pairs of () [] etc.
 (set-terminal-coding-system 'utf-8) ; utf-8 rendering support
-(setq gc-cons-threshold (* 50 1000 1000)) ; delay garbage collector
 (setq ivy-re-builders-alist '((swiper . ivy--regex-plus)
                               (t . ivy--regex-fuzzy))) ; ivy search patterns
 
@@ -161,6 +162,11 @@
 ;; reload buffers
 (global-auto-revert-mode 1) ; reload file buffers when the file changes on disk
 (setq global-auto-revert-non-file-buffers t) ; reload dired buffers if files changes on disk
+
+;; lsp hacks
+(setq gc-cons-threshold (* 100 1000 1000)) ; delay garbage collector
+(setq read-process-output-max (* 10  1000  1000)) ; increase max data read from LSP process
+(setq lsp-log-io nil) ; do not log anything from LSP
 
 ;; kill useless and annoying buffers
 (defun remove-scratch-buffer ()
@@ -189,6 +195,8 @@
 (global-set-key (kbd "<f7>") 'previous-buffer)
 (global-set-key (kbd "<f8>") 'next-buffer)
 (global-set-key (kbd "<f9>") 'execute-extended-command)
+(global-set-key (kbd "S-<f9>") 'eval-expression)
+(global-set-key (kbd "C-<f9>") (lambda() (interactive) (eval-expression (load-file user-init-file))))
 (global-set-key (kbd "<f12>") 'kill-this-buffer)
 (global-set-key (kbd "C-<f12>") 'kill-emacs)
 
