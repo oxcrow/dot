@@ -44,7 +44,7 @@
 
 (use-package ivy
   :diminish
-  :bind (("<f4>" . swiper)
+  :bind (("C-s" . swiper)
          :map ivy-minibuffer-map
          ("TAB" . ivy-alt-done)
          ("C-l" . ivy-alt-done)
@@ -77,6 +77,7 @@
 (use-package evil
   :init
   (setq evil-want-C-u-scroll t)
+  (setq evil-want-fine-undo t)
   :config
   (evil-mode 1))
 
@@ -100,6 +101,12 @@
   :hook ((prog-mode) . (highlight-indent-guides))
   :config
   (setq highlight-indent-guides-method 'character))
+
+(use-package beacon
+  :commands(beacon-blink))
+
+(use-package projectile
+  :commands (projectile-find-file))
 
 (use-package lsp-mode
   :hook ((rust-mode c-mode c++-mode) . lsp-deferred)
@@ -140,13 +147,13 @@
 
 ;; save history
 (recentf-mode 1) ; save history of recently openend files
-(savehist-mode 1) ; save history of recently used commands
 (save-place-mode 1) ; save location of last cursor location
 
 (electric-pair-mode 1) ; auto complete pairs of () [] etc.
 (set-terminal-coding-system 'utf-8) ; utf-8 rendering support
 (setq gc-cons-threshold (* 50 1000 1000)) ; delay garbage collector
-(setq ivy-re-builders-alist '((t . ivy--regex-fuzzy))) ; use fuzzy search [critical]
+(setq ivy-re-builders-alist '((swiper . ivy--regex-plus)
+                              (t . ivy--regex-fuzzy))) ; ivy search patterns
 
 (set-frame-parameter (selected-frame) 'buffer-predicate #'buffer-file-name) ; only cycle through file buffers
 
@@ -176,26 +183,29 @@
 ;;
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-(global-set-key (kbd "<f2>") (lambda() (interactive)(evil-normal-state)(save-buffer)))
+(global-set-key (kbd "<f2>") (lambda() (interactive)(evil-normal-state)(beacon-blink)(save-buffer)))
+(global-set-key (kbd "<f3>") 'projectile-find-file)
 (global-set-key (kbd "<f7>") 'previous-buffer)
 (global-set-key (kbd "<f8>") 'next-buffer)
-(global-set-key (kbd "S-<f8>") 'kill-this-buffer)
 (global-set-key (kbd "<f9>") 'execute-extended-command)
-(global-set-key (kbd "<f12>") 'kill-emacs)
+(global-set-key (kbd "<f12>") 'kill-this-buffer)
+(global-set-key (kbd "C-<f12>") 'kill-emacs)
 
+(define-key evil-normal-state-map (kbd "<escape>") (lambda() (interactive)(evil-normal-state)(beacon-blink)))
+(define-key evil-insert-state-map (kbd "<escape>") (lambda() (interactive)(evil-normal-state)(beacon-blink)))
 (evil-global-set-key 'motion "j" 'evil-next-visual-line)
 (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 (define-key evil-normal-state-map (kbd "a") 'evil-append-line)
 (define-key evil-normal-state-map (kbd "s") 'swiper)
-(define-key evil-normal-state-map (kbd ",") 'avy-goto-word-1)
+(define-key evil-normal-state-map (kbd ",") 'avy-goto-char-timer)
 
 (evil-leader/set-leader "<SPC>")
 (evil-leader/set-key
+  "<SPC>" 'switch-to-buffer
   "s" 'swiper
   "f" 'format-all-buffer
-  "w" 'switch-to-buffer
   "k" 'kill-buffer
-  "o" 'find-file)
+  "o" 'projectile-find-file)
 
 ;; what the hecc is this?
 (custom-set-variables
