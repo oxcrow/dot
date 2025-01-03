@@ -4,16 +4,18 @@
 
 (load-theme 'leuven)
 
+;; set cursor
+(global-hl-line-mode 1) ; highlight current line
+
 ;; set line numbers
 (column-number-mode) ; show column number in mode line
 (global-display-line-numbers-mode 1) ; show line numbers in all buffers
 (setq display-line-numbers-type 'relative) ; show relative line numbers
 
-;; set indentation
+;; set indentation and tab behavior
 (setq-default indent-tabs-mode nil) ; always use spaces instead of tabs for indentation everywhere posible
 (setq-default tab-width 4) ; use 4 spaces per tabs everywhere possible
 (defvaralias 'c-basic-offset 'tab-width) ; set tabwidth for c like languages
-
 (setq tab-always-indent 'complete) ; enable auto-completion by pressing tab
 
 ;; analyze startup performance
@@ -201,7 +203,6 @@
 (global-set-key (kbd "C-<f12>") 'kill-emacs)
 
 (define-key evil-normal-state-map (kbd "<escape>") (lambda() (interactive)(evil-normal-state)(beacon-blink)))
-(define-key evil-insert-state-map (kbd "<escape>") (lambda() (interactive)(evil-normal-state)(beacon-blink)))
 (evil-global-set-key 'motion "j" 'evil-next-visual-line)
 (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 (define-key evil-normal-state-map (kbd "a") 'evil-append-line)
