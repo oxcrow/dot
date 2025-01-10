@@ -90,7 +90,12 @@
   :config (global-evil-leader-mode))
 
 (use-package avy
-  :after evil)
+  :after evil
+  :config
+  (setq avy-keys (number-sequence ?a ?z))
+  (setq avy-orders-alist
+      '((avy-goto-line . avy-order-closest)
+        (avy-goto-char-timer . avy-order-closest))))
 
 (use-package which-key
   :defer 1
@@ -113,7 +118,7 @@
   :commands (projectile-find-file))
 
 (use-package lsp-mode
-  :hook ((rust-mode c-mode c++-mode) . lsp-deferred)
+  :hook ((rust-mode c-mode c++-mode tuareg-mode) . lsp-deferred)
   :commands (lsp lsp-deferred))
 
 (use-package corfu
@@ -125,10 +130,18 @@
   :config
   (setq-default format-all-formatters '(("C" (clang-format))
                                         ("C++" (clang-format))
-                                        ("Rust" (rustfmt)))))
+                                        ("Rust" (rustfmt))
+                                        ("OCaml" (ocamlformat)))))
 
 (use-package rust-mode
   :mode "\\.rs\\'")
+
+(use-package tuareg
+  :mode ("\\.ml\\'" . tuareg-mode))
+
+(use-package merlin
+  :after tuareg
+  :config(merlin-mode))
 
 ;;
 ;; hooks
@@ -213,6 +226,7 @@
 (evil-leader/set-key
   "<SPC>" 'switch-to-buffer
   "s" 'swiper
+  "l" 'avy-goto-line
   "f" 'format-all-buffer
   "k" 'kill-buffer
   "o" 'projectile-find-file)
