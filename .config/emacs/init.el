@@ -94,8 +94,9 @@
   :config
   (setq avy-keys (number-sequence ?a ?z))
   (setq avy-orders-alist
-      '((avy-goto-line . avy-order-closest)
-        (avy-goto-char-timer . avy-order-closest))))
+        '((avy-goto-line . avy-order-closest)
+          (avy-goto-word-0 . avy-order-closest)
+          (avy-goto-char-timer . avy-order-closest))))
 
 (use-package which-key
   :defer 1
@@ -119,7 +120,10 @@
 
 (use-package lsp-mode
   :hook ((rust-mode c-mode c++-mode tuareg-mode) . lsp-deferred)
-  :commands (lsp lsp-deferred))
+  :commands (lsp lsp-deferred)
+  :config
+  (setq lsp-headerline-breadcrumb-enable nil)  ;; disable ugly breadcumb headerline
+  (setq lsp-ui-doc-enable 1))
 
 (use-package corfu
   :after lsp-mode
@@ -134,10 +138,14 @@
                                         ("OCaml" (ocamlformat)))))
 
 (use-package rust-mode
-  :mode "\\.rs\\'")
+  :mode "\\.rs\\'"
+  :config
+  (add-hook 'before-save-hook #'format-all-buffer))
 
 (use-package tuareg
-  :mode ("\\.ml\\'" . tuareg-mode))
+  :mode ("\\.ml\\'" . tuareg-mode)
+  :config
+  (add-hook 'before-save-hook #'format-all-buffer))
 
 (use-package merlin
   :after tuareg
@@ -147,7 +155,7 @@
 ;; hooks
 ;;
 
-(add-hook 'lsp-mode-hook (setq lsp-headerline-breadcrumb-enable nil)) ; disable lsp breadcrumb header
+(add-hook 'before-save-hook #'format-all-buffer)
 
 ;;
 ;; advanced configuration
@@ -220,13 +228,17 @@
 (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 (define-key evil-normal-state-map (kbd "a") 'evil-append-line)
 (define-key evil-normal-state-map (kbd "s") 'swiper)
-(define-key evil-normal-state-map (kbd ",") 'avy-goto-char-timer)
+(define-key evil-normal-state-map (kbd ",") 'avy-goto-word-0)
+(define-key evil-normal-state-map (kbd "f") (lambda() (interactive)(avy-goto-word-0 nil (line-beginning-position) (line-end-position))))
+(define-key evil-normal-state-map (kbd "t") 'avy-goto-char-timer)
 
 (evil-leader/set-leader "<SPC>")
 (evil-leader/set-key
   "<SPC>" 'switch-to-buffer
   "s" 'swiper
+  "w" 'avy-goto-word-0
   "l" 'avy-goto-line
+  "r" 'lsp-rename
   "f" 'format-all-buffer
   "k" 'kill-buffer
   "o" 'projectile-find-file)
