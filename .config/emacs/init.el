@@ -2,7 +2,25 @@
 ;; basic configuration
 ;;
 
+;; set global keys
+;; we do this at the beginning so in case we mess up our emac config
+;; we at least have some basic features that we can use to recover
+;; from the broken state
+(global-set-key (kbd "<f12>") 'kill-this-buffer)
+(global-set-key (kbd "C-<f12>") 'kill-emacs)
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "<f2>") (lambda() (interactive)(evil-normal-state)(beacon-blink)(save-buffer)))
+(global-set-key (kbd "<f3>") 'projectile-find-file)
+(global-set-key (kbd "<f7>") 'previous-buffer)
+(global-set-key (kbd "<f8>") 'next-buffer)
+(global-set-key (kbd "<f9>") 'execute-extended-command)
+(global-set-key (kbd "S-<f9>") 'eval-expression)
+(global-set-key (kbd "C-<f9>") (lambda() (interactive) (eval-expression (load-file user-init-file))))
+
+;; load themes
+(add-to-list 'custom-theme-load-path "~/.config/emacs/etc/themes/")
 (load-theme 'leuven)
+;;(load-theme 'infrared 1)
 
 ;; set cursor
 (global-hl-line-mode 1) ; highlight current line
@@ -92,7 +110,7 @@
 (use-package avy
   :after evil
   :config
-  (setq avy-keys (number-sequence ?a ?z))
+  (setq avy-keys '(?a ?s ?d ?f ?g ?h ?i ?j ?k ?l))
   (setq avy-orders-alist
         '((avy-goto-line . avy-order-closest)
           (avy-goto-word-0 . avy-order-closest)
@@ -110,6 +128,8 @@
 (use-package highlight-indent-guides
   :hook ((prog-mode) . (highlight-indent-guides))
   :config
+  (setq highlight-indent-guides-character ?\x250A)
+  (set-face-foreground 'highlight-indent-guides-character-face "dimgray")
   (setq highlight-indent-guides-method 'character))
 
 (use-package beacon
@@ -123,7 +143,18 @@
   :commands (lsp lsp-deferred)
   :config
   (setq lsp-headerline-breadcrumb-enable nil)  ;; disable ugly breadcumb headerline
-  (setq lsp-ui-doc-enable 1))
+  (setq lsp-enable-links nil) ;; disable ugly underlines under c includes
+  (setq lsp-ui-doc-enable 1) ; BUG:; not sure if this even works
+  (setq lsp-enable-symbol-highlighting nil) ;; disable ugly symbol highligths and underlnes
+  (setq completion-ignore-case 1)) ;; disable case sensitive completion at point
+
+(with-eval-after-load 'lsp-mode
+  (add-to-list 'lsp-language-id-configuration '(".*\\.md$" . "seer")))
+(with-eval-after-load 'lsp-mode
+  (lsp-register-client (make-lsp-client
+                        :new-connection (lsp-stdio-connection "seer")
+                        :activation-fn (lsp-activate-on "seer")
+                        :server-id 'seer)))
 
 (use-package corfu
   :after lsp-mode
@@ -135,7 +166,8 @@
   (setq-default format-all-formatters '(("C" (clang-format))
                                         ("C++" (clang-format))
                                         ("Rust" (rustfmt))
-                                        ("OCaml" (ocamlformat)))))
+                                        ("OCaml" (ocamlformat))
+                                        ("Haskell" (ormolu)))))
 
 (use-package rust-mode
   :mode "\\.rs\\'"
@@ -150,6 +182,12 @@
 (use-package merlin
   :after tuareg
   :config(merlin-mode))
+
+(use-package haskell-mode
+  :mode ("\\.hs\\'" . haskell-mode))
+
+(use-package lsp-haskell
+  :after haskell-mode)
 
 ;;
 ;; hooks
@@ -187,7 +225,7 @@
 (setq global-auto-revert-non-file-buffers t) ; reload dired buffers if files changes on disk
 
 ;; lsp hacks
-(setq gc-cons-threshold (* 100 1000 1000)) ; delay garbage collector
+(setq gc-cons-threshold (* 50 1000 1000)) ; delay garbage collector
 (setq read-process-output-max (* 10  1000  1000)) ; increase max data read from LSP process
 (setq lsp-log-io nil) ; do not log anything from LSP
 
@@ -212,17 +250,6 @@
 ;; key bindings
 ;;
 
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-(global-set-key (kbd "<f2>") (lambda() (interactive)(evil-normal-state)(beacon-blink)(save-buffer)))
-(global-set-key (kbd "<f3>") 'projectile-find-file)
-(global-set-key (kbd "<f7>") 'previous-buffer)
-(global-set-key (kbd "<f8>") 'next-buffer)
-(global-set-key (kbd "<f9>") 'execute-extended-command)
-(global-set-key (kbd "S-<f9>") 'eval-expression)
-(global-set-key (kbd "C-<f9>") (lambda() (interactive) (eval-expression (load-file user-init-file))))
-(global-set-key (kbd "<f12>") 'kill-this-buffer)
-(global-set-key (kbd "C-<f12>") 'kill-emacs)
-
 (define-key evil-normal-state-map (kbd "<escape>") (lambda() (interactive)(evil-normal-state)(beacon-blink)))
 (evil-global-set-key 'motion "j" 'evil-next-visual-line)
 (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
@@ -231,6 +258,8 @@
 (define-key evil-normal-state-map (kbd ",") 'avy-goto-word-0)
 (define-key evil-normal-state-map (kbd "f") (lambda() (interactive)(avy-goto-word-0 nil (line-beginning-position) (line-end-position))))
 (define-key evil-normal-state-map (kbd "t") 'avy-goto-char-timer)
+
+(define-key evil-normal-state-map (kbd "K") 'lsp-describe-thing-at-point)
 
 (evil-leader/set-leader "<SPC>")
 (evil-leader/set-key
