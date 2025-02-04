@@ -11,15 +11,18 @@
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "<f2>") (lambda() (interactive)(evil-normal-state)(beacon-blink)(save-buffer)))
 (global-set-key (kbd "<f3>") 'projectile-find-file)
-(global-set-key (kbd "<f7>") 'previous-buffer)
-(global-set-key (kbd "<f8>") 'next-buffer)
+(global-set-key (kbd "<f7>") 'tab-bar-switch-to-prev-tab)
+(global-set-key (kbd "<f8>") 'tab-bar-switch-to-next-tab)
+(global-set-key (kbd "S-<f7>") 'previous-buffer)
+(global-set-key (kbd "S-<f8>") 'next-buffer)
 (global-set-key (kbd "<f9>") 'execute-extended-command)
 (global-set-key (kbd "S-<f9>") 'eval-expression)
 (global-set-key (kbd "C-<f9>") (lambda() (interactive) (eval-expression (load-file user-init-file))))
 
 ;; load themes
-(add-to-list 'custom-theme-load-path "~/.config/emacs/etc/themes/")
 (load-theme 'leuven)
+;;
+;;(add-to-list 'custom-theme-load-path "~/.config/emacs/etc/themes/")
 ;;(load-theme 'infrared 1)
 
 ;; set cursor
@@ -143,18 +146,19 @@
   :commands (lsp lsp-deferred)
   :config
   (setq lsp-headerline-breadcrumb-enable nil)  ;; disable ugly breadcumb headerline
+  (setq lsp-modeline-code-actions-enable nil) ;; disable the ugly modeline information
   (setq lsp-enable-links nil) ;; disable ugly underlines under c includes
   (setq lsp-ui-doc-enable 1) ; BUG:; not sure if this even works
   (setq lsp-enable-symbol-highlighting nil) ;; disable ugly symbol highligths and underlnes
   (setq completion-ignore-case 1)) ;; disable case sensitive completion at point
 
 (with-eval-after-load 'lsp-mode
-  (add-to-list 'lsp-language-id-configuration '(".*\\.md$" . "seer")))
+  (add-to-list 'lsp-language-id-configuration '(".*\\.md$" . "ask")))
 (with-eval-after-load 'lsp-mode
   (lsp-register-client (make-lsp-client
-                        :new-connection (lsp-stdio-connection "seer")
-                        :activation-fn (lsp-activate-on "seer")
-                        :server-id 'seer)))
+                        :new-connection (lsp-stdio-connection "ask")
+                        :activation-fn (lsp-activate-on "ask")
+                        :server-id 'ask)))
 
 (use-package corfu
   :after lsp-mode
@@ -203,6 +207,14 @@
 (menu-bar-mode -1) ; disable menu bar
 (tooltip-mode -1) ; disable tool tips
 (setq make-backup-files nil) ; disable backup files
+
+;; reconfigure mode line because everything looks ugly by default.
+;; specifically emacs minor modes makes my mode line  ugly as fuck
+;; by adding annoying information about the current lsp, ivy, and
+;; other thousand different god knows what kind of garbage dogshit
+;; worthless minor modes that i never asked for!
+;; fuck all of them!
+(setq-default mode-line-format (delq 'mode-line-modes mode-line-format))
 
 ;; kill annoying behavhiors
 (setq make-backup-files nil) ; disable backup files
@@ -270,6 +282,7 @@
   "r" 'lsp-rename
   "f" 'format-all-buffer
   "k" 'kill-buffer
+  "t" 'tab-bar-new-tab
   "o" 'projectile-find-file)
 
 ;; what the hecc is this?
