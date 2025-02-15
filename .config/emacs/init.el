@@ -7,6 +7,7 @@
 ;; we at least have some basic features that we can use to recover
 ;; from the broken state
 (global-set-key (kbd "<f12>") 'kill-this-buffer)
+(global-set-key (kbd "S-<f12>") 'tab-bar-close-tab)
 (global-set-key (kbd "C-<f12>") 'kill-emacs)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "<f2>") (lambda() (interactive)(evil-normal-state)(beacon-blink)(save-buffer)))
@@ -110,6 +111,10 @@
   :after evil
   :config (global-evil-leader-mode))
 
+(use-package evil-surround
+  :after evil
+  :config (global-evil-surround-mode 1))
+
 (use-package avy
   :after evil
   :config
@@ -138,11 +143,28 @@
 (use-package beacon
   :commands(beacon-blink))
 
+(use-package doom-modeline
+  :config
+  (setq doom-modeline-icon nil) ; disable icons
+  (doom-modeline-mode 1))
+
+(use-package adaptive-wrap
+  :config
+  (setq-default adaptive-wrap-extra-indent 4)
+  (defun turn-on-adaptive-wrap-prefix-mode ()
+      "Turns on adaptive-wrap-prefix-mode."
+      (interactive)
+      (adaptive-wrap-prefix-mode 1))
+    (define-globalized-minor-mode global-adaptive-wrap-prefix-mode
+      adaptive-wrap-prefix-mode
+      turn-on-adaptive-wrap-prefix-mode)
+    (global-adaptive-wrap-prefix-mode 1))
+
 (use-package projectile
   :commands (projectile-find-file))
 
 (use-package lsp-mode
-  :hook ((rust-mode c-mode c++-mode tuareg-mode) . lsp-deferred)
+  :hook ((rust-mode c-mode c++-mode tuareg-mode go-mode) . lsp-deferred)
   :commands (lsp lsp-deferred)
   :config
   (setq lsp-headerline-breadcrumb-enable nil)  ;; disable ugly breadcumb headerline
@@ -171,7 +193,8 @@
                                         ("C++" (clang-format))
                                         ("Rust" (rustfmt))
                                         ("OCaml" (ocamlformat))
-                                        ("Haskell" (ormolu)))))
+                                        ("Haskell" (ormolu))
+                                        ("Go" (gofmt)))))
 
 (use-package rust-mode
   :mode "\\.rs\\'"
@@ -192,6 +215,9 @@
 
 (use-package lsp-haskell
   :after haskell-mode)
+
+(use-package go-mode
+  :mode ("\\.go\\'" . go-mode))
 
 ;;
 ;; hooks
@@ -258,6 +284,10 @@
 (add-hook 'after-change-major-mode-hook 'remove-message-buffer)
 (add-hook 'after-change-major-mode-hook 'remove-compile-buffer)
 
+;; configure eww browser
+(setq-default shr-max-width 80) ; to set max column width as 100
+(global-set-key (kbd "S-<f5>") 'eww-readable)
+
 ;;
 ;; key bindings
 ;;
@@ -277,7 +307,7 @@
 (evil-leader/set-key
   "<SPC>" 'switch-to-buffer
   "s" 'swiper
-  "w" 'avy-goto-word-0
+  "w" 'other-window
   "l" 'avy-goto-line
   "r" 'lsp-rename
   "f" 'format-all-buffer
@@ -291,7 +321,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(rust-mode evil ivy)))
+ '(package-selected-packages '(doom-modeline adaptive-wrap rust-mode evil ivy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
