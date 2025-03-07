@@ -1,3 +1,0 @@
-# dot
-
-My dotfile configurations.
