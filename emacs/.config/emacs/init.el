@@ -293,6 +293,8 @@
 (define-key evil-normal-state-map (kbd ",") 'avy-goto-word-0)
 (define-key evil-normal-state-map (kbd "f") (lambda() (interactive)(avy-goto-word-0 nil (line-beginning-position) (line-end-position))))
 (define-key evil-normal-state-map (kbd "t") 'avy-goto-char-timer)
+(define-key evil-normal-state-map (kbd "]d") 'flymake-goto-next-error)
+(define-key evil-normal-state-map (kbd "[d") 'flymake-goto-prev-error)
 
 (define-key evil-normal-state-map (kbd "K") 'lsp-describe-thing-at-point)
 
