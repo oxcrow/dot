@@ -84,6 +84,15 @@ vim.schedule(function()
   vim.o.clipboard = 'unnamedplus'
 end)
 
+-- Expand tabs to spaces
+vim.o.expandtab = true
+
+-- Shift by characters
+vim.o.shiftwidth = 4
+
+-- Set tabstop at
+vim.o.tabstop = 4
+
 -- Enable break indent
 vim.o.breakindent = true
 
@@ -658,6 +667,12 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
+        --
+        clangd = {
+          cmd = { vim.fn.stdpath 'data' .. '/mason/bin/clangd', '--query-driver=/usr/bin/c++' },
+          filetypes = { 'c', 'cc', 'cpp', 'h', 'hh', 'hpp' },
+          capabilities = capabilities,
+        },
 
         lua_ls = {
           -- cmd = { ... },
@@ -731,7 +746,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { c = false, cpp = false }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
@@ -880,6 +895,10 @@ require('lazy').setup({
   },
 --]]
 
+  -- xthemes
+  { 'ntk148v/komau.vim' },
+  { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
+
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -1010,6 +1029,21 @@ require('lazy').setup({
       -- fill any relevant options here
     },
   },
+  { -- noice
+    'folke/noice.nvim',
+    event = 'VeryLazy',
+    opts = {
+      -- add any options here
+    },
+    dependencies = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      'MunifTanjim/nui.nvim',
+      -- OPTIONAL:
+      --   `nvim-notify` is only needed, if you want to use the notification view.
+      --   If not available, we use `mini` as the fallback
+      'rcarriga/nvim-notify',
+    },
+  },
   { -- code outline plugin
     'hedyhli/outline.nvim',
     lazy = true,
@@ -1081,6 +1115,18 @@ require('lazy').setup({
   },
 })
 
+require('catppuccin').setup {
+  color_overrides = {
+    all = {},
+    latte = {
+      base = '#ffffff',
+    },
+    frappe = {},
+    macchiato = {},
+    mocha = {},
+  },
+}
+
 -- Save easily using F2 in normal and insert mode
 vim.keymap.set('n', '<F2>', '<esc><cmd>w<cr>', { silent = true })
 vim.keymap.set('i', '<F2>', '<esc><cmd>w<cr>', { silent = true })
@@ -1121,11 +1167,15 @@ vim.keymap.set('n', '-', '$', { silent = true })
 vim.keymap.set('v', '-', '$', { silent = true })
 
 -- Experimental (Selection-Action model of Helix)
-vim.keymap.set('n', 'w', '<esc>viw', { silent = true })
-vim.keymap.set('v', 'w', '<esc>wviw', { silent = true })
+--vim.keymap.set('n', 'w', '<esc>viw', { silent = true })
+--vim.keymap.set('v', 'w', '<esc>wviw', { silent = true })
 
 -- Use neotree file explorer
 vim.keymap.set('n', '<leader>e', ':Neotree<cr>', { silent = true })
 
 -- Set colorscheme
-vim.cmd.colorscheme 'industry'
+-- vim.cmd.colorscheme 'industry'
+-- vim.cmd.colorscheme 'zellner'
+-- vim.cmd.colorscheme 'lunaperche'
+
+vim.cmd.colorscheme 'catppuccin-latte'
