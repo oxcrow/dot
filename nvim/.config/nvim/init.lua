@@ -186,6 +186,14 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
+-- Set neovim filetypes based on extension
+vim.filetype.add {
+  pattern = {
+    ['.gitconfig'] = 'gitconfig',
+    ['.*.n'] = 'javascript',
+  },
+}
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -674,6 +682,8 @@ require('lazy').setup({
           capabilities = capabilities,
         },
 
+        rust_analyzer = {},
+
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -1123,7 +1133,10 @@ require('catppuccin').setup {
     },
     frappe = {},
     macchiato = {},
-    mocha = {},
+    mocha = {
+      base = '#080808',
+      mantle = '#080808',
+    },
   },
 }
 
@@ -1156,8 +1169,8 @@ vim.keymap.set('i', 'jj', '<esc>:w<cr>', { silent = true })
 
 -- hop.nvim keys to move around in buffers
 vim.keymap.set('n', '<leader>l', ':HopLineStart<cr>', { silent = true })
-vim.keymap.set('n', ',', ':HopWord<cr>', { silent = true })
-vim.keymap.set('v', ',', '<esc>:HopWord<cr>', { silent = true })
+vim.keymap.set('n', 't', ':HopWord<cr>', { silent = true })
+vim.keymap.set('v', 't', '<esc>:HopWord<cr>', { silent = true })
 
 -- Use a to append to end of line
 vim.keymap.set('n', 'a', '<S-a>', { silent = true })
@@ -1176,6 +1189,6 @@ vim.keymap.set('n', '<leader>e', ':Neotree<cr>', { silent = true })
 -- Set colorscheme
 -- vim.cmd.colorscheme 'industry'
 -- vim.cmd.colorscheme 'zellner'
--- vim.cmd.colorscheme 'lunaperche'
-
-vim.cmd.colorscheme 'catppuccin-latte'
+-- vim.cmd.colorscheme 'catppuccin-latte'
+-- vim.cmd.colorscheme 'catppuccin-mocha'
+vim.cmd.colorscheme 'lunaperche'
