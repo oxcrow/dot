@@ -50,6 +50,9 @@ I hope you enjoy your Neovim journey,
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
+-- Set the current hour
+local hour = tonumber(os.date '%H')
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -125,7 +128,7 @@ vim.o.splitbelow = true
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
 vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '┊ ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -190,7 +193,7 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 vim.filetype.add {
   pattern = {
     ['.gitconfig'] = 'gitconfig',
-    ['.*.n'] = 'javascript',
+    ['.*.nxn'] = 'javascript',
   },
 }
 
@@ -676,11 +679,6 @@ require('lazy').setup({
         -- ts_ls = {},
         --
         --
-        clangd = {
-          cmd = { vim.fn.stdpath 'data' .. '/mason/bin/clangd', '--query-driver=/usr/bin/c++' },
-          filetypes = { 'c', 'cc', 'cpp', 'h', 'hh', 'hpp' },
-          capabilities = capabilities,
-        },
 
         rust_analyzer = {},
 
@@ -907,7 +905,9 @@ require('lazy').setup({
 
   -- xthemes
   { 'ntk148v/komau.vim' },
+  { 'nyoom-engineering/oxocarbon.nvim' },
   { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
+  { 'rktjmp/lush.nvim' },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -1054,6 +1054,10 @@ require('lazy').setup({
       'rcarriga/nvim-notify',
     },
   },
+  -- xwrite
+  { 'folke/twilight.nvim' },
+  { 'preservim/vim-pencil' },
+  { 'Shougo/neocomplcache.vim' },
   { -- code outline plugin
     'hedyhli/outline.nvim',
     lazy = true,
@@ -1102,6 +1106,19 @@ require('lazy').setup({
         },
       },
     },
+  },
+  { -- mark some directories as readonly to protect them from accidental modifications
+    'bgaillard/readonly.nvim',
+    dependencies = {
+      'rcarriga/nvim-notify',
+    },
+    opts = {
+      -- see https://neovim.io/doc/user/lua.html#vim.fs.normalize()
+      secured_files = {
+        '~/.opam/.',
+      },
+    },
+    lazy = false,
   },
 }, {
   ui = {
@@ -1186,9 +1203,30 @@ vim.keymap.set('v', '-', '$', { silent = true })
 -- Use neotree file explorer
 vim.keymap.set('n', '<leader>e', ':Neotree<cr>', { silent = true })
 
--- Set colorscheme
--- vim.cmd.colorscheme 'industry'
--- vim.cmd.colorscheme 'zellner'
--- vim.cmd.colorscheme 'catppuccin-latte'
--- vim.cmd.colorscheme 'catppuccin-mocha'
-vim.cmd.colorscheme 'lunaperche'
+-- Set colorscheme for day and night
+if hour > 9 and hour < 17 then
+  -- vim.cmd.colorscheme 'catppuccin-latte'
+  vim.cmd.colorscheme 'lunaperche'
+else
+  -- vim.cmd.colorscheme 'catppuccin-latte'
+  -- vim.cmd.colorscheme 'quiet'
+  -- vim.cmd.colorscheme 'industry'
+  -- vim.cmd.colorscheme 'oxocarbon'
+  vim.cmd.colorscheme 'lunaperche'
+end
+
+vim.api.nvim_create_autocmd({
+  'BufNewFile',
+  'BufRead',
+}, {
+  pattern = '*.md',
+  callback = function()
+    vim.cmd 'Pencil'
+    vim.cmd 'NeoComplCacheEnable'
+    vim.cmd 'set columns=70'
+    vim.cmd 'set wrapmargin=0'
+    vim.cmd 'set linebreak'
+    vim.cmd 'set spell'
+    vim.cmd 'set wrap'
+  end,
+})
