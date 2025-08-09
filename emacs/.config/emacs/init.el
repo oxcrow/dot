@@ -1,6 +1,15 @@
 ;;
 ;; basic configuration
 ;;
+(setq-default oxcrow-editing-mode 0) ; 0 for evil, 1 for meow
+
+;;
+;; mode agnostic functions
+;;
+
+(defun oxcrow-normal-state ()
+  (if (eq oxcrow-editing-mode 0) (evil-normal-state) (meow-normal-mode)))
+
 
 ;; set global keys
 ;; we do this at the beginning so in case we mess up our emac config
@@ -9,7 +18,7 @@
 (global-set-key (kbd "S-<f12>") 'tab-bar-close-tab)
 (global-set-key (kbd "C-<f12>") 'kill-emacs)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-(global-set-key (kbd "<f2>") (lambda() (interactive) (evil-normal-state)(save-buffer)(delete-other-windows)))
+(global-set-key (kbd "<f2>") (lambda() (interactive) (oxcrow-normal-state)(save-buffer)(delete-other-windows)))
 (global-set-key (kbd "<f3>") 'projectile-find-file)
 (global-set-key (kbd "<f7>") 'tab-bar-switch-to-prev-tab)
 (global-set-key (kbd "<f8>") 'tab-bar-switch-to-next-tab)
@@ -19,6 +28,7 @@
 (global-set-key (kbd "S-<f9>") 'eval-expression)
 (global-set-key (kbd "C-<f9>") (lambda() (interactive) (eval-expression (load-file user-init-file))))
 (xterm-mouse-mode 1)
+
 
 ;; load themes
 (load-theme 'leuven)
@@ -115,7 +125,7 @@
   (setq evil-want-C-u-scroll t)
   (setq evil-want-fine-undo t)
   :config
-  (evil-mode 1))
+  (evil-mode (if (eq oxcrow-editing-mode 0) 1 0)))
 
 (use-package meow)
 (defun meow-setup ()
@@ -202,7 +212,7 @@
    '("<escape>" . ignore)))
 (require 'meow)
 (meow-setup)
-(meow-global-mode 0)
+(meow-global-mode (if (eq oxcrow-editing-mode 1) 1 0))
 
 (use-package evil-leader
   :after evil
@@ -257,9 +267,10 @@
   (setq lsp-enable-symbol-highlighting nil) ;; disable ugly symbol highligths and underlnes
   (setq completion-ignore-case 1) ;; disable case sensitive completion at point
   ;; (setq lsp-diagnostics-provider :none) ;; disable lsp error diagnostics (it's annoying in ocaml)
-  (setq evil-normal-state-tag (propertize "NOR" 'face '(:background "blue" :foreground "white")))
-  (setq evil-insert-state-tag (propertize "INS" 'face '(:background "blue" :foreground "white")))
-  (setq evil-visual-state-tag (propertize "VIS" 'face '(:background "blue" :foreground "white"))))
+  ;; (setq evil-normal-state-tag (propertize "NOR" 'face '(:background "blue" :foreground "white")))
+  ;; (setq evil-insert-state-tag (propertize "INS" 'face '(:background "blue" :foreground "white")))
+  ;; (setq evil-visual-state-tag (propertize "VIS" 'face '(:background "blue" :foreground "white")))
+  )
 
 (with-eval-after-load 'lsp-mode
   (add-to-list 'lsp-language-id-configuration '(".*\\.md$" . "ask")))
@@ -301,7 +312,6 @@
 (use-package merlin
   :after tuareg
   :config(merlin-mode))
-
 
 ;;
 ;; hooks
