@@ -9,7 +9,7 @@
 (global-set-key (kbd "S-<f12>") 'tab-bar-close-tab)
 (global-set-key (kbd "C-<f12>") 'kill-emacs)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-(global-set-key (kbd "<f2>") (lambda() (interactive) (evil-normal-state)(save-buffer)))
+(global-set-key (kbd "<f2>") (lambda() (interactive) (evil-normal-state)(save-buffer)(delete-other-windows)))
 (global-set-key (kbd "<f3>") 'projectile-find-file)
 (global-set-key (kbd "<f7>") 'tab-bar-switch-to-prev-tab)
 (global-set-key (kbd "<f8>") 'tab-bar-switch-to-next-tab)
@@ -18,6 +18,7 @@
 (global-set-key (kbd "<f9>") 'execute-extended-command)
 (global-set-key (kbd "S-<f9>") 'eval-expression)
 (global-set-key (kbd "C-<f9>") (lambda() (interactive) (eval-expression (load-file user-init-file))))
+(xterm-mouse-mode 1)
 
 ;; load themes
 (load-theme 'leuven)
@@ -63,6 +64,13 @@
 (setq use-package-always-ensure t)
 
 (use-package no-littering)
+(use-package nerd-icons)
+
+(use-package catppuccin-theme
+  ;; :init
+  ;; (setq catppuccin-flavor 'latte)
+  ;; (load-theme 'catppuccin 1)
+)
 
 (use-package ivy
   :diminish
@@ -110,6 +118,91 @@
   (evil-mode 1))
 
 (use-package meow)
+(defun meow-setup ()
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev)
+   '("<escape>" . ignore))
+  (meow-leader-define-key
+   ;; Use SPC (0-9) for digit arguments.
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("A" . meow-open-below)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("d" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("f" . meow-find)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("I" . meow-open-above)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("m" . meow-join)
+   '("n" . meow-search)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("s" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("v" . meow-visit)
+   '("w" . meow-mark-word)
+   '("W" . meow-mark-symbol)
+   '("x" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("z" . meow-pop-selection)
+   '("'" . repeat)
+   '("<escape>" . ignore)))
+(require 'meow)
+(meow-setup)
+(meow-global-mode 0)
 
 (use-package evil-leader
   :after evil
@@ -120,7 +213,6 @@
   :config (global-evil-surround-mode 1))
 
 (use-package avy
-  :after evil
   :config
   (setq avy-keys '(?a ?s ?d ?f ?g ?h ?i ?j ?k ?l))
   (setq avy-orders-alist
@@ -136,7 +228,7 @@
 (use-package fill-column-indicator
   :defer 1
   :config
-  (setq-default display-fill-column-indicator-column 120)
+  (setq-default display-fill-column-indicator-column 80)
   (global-display-fill-column-indicator-mode))
 
 (use-package highlight-indent-guides
@@ -155,7 +247,7 @@
   :commands (projectile-find-file))
 
 (use-package lsp-mode
-  :hook ((rust-mode c-mode c++-mode tuareg-mode go-mode) . lsp-deferred)
+  :hook ((zig-mode rust-mode c-mode c++-mode tuareg-mode) . lsp-deferred)
   :commands (lsp lsp-deferred)
   :config
   (setq lsp-headerline-breadcrumb-enable nil)  ;; disable ugly breadcumb headerline
@@ -164,6 +256,7 @@
   (setq lsp-ui-doc-enable nil) ;; BUG:; not sure if this even works
   (setq lsp-enable-symbol-highlighting nil) ;; disable ugly symbol highligths and underlnes
   (setq completion-ignore-case 1) ;; disable case sensitive completion at point
+  ;; (setq lsp-diagnostics-provider :none) ;; disable lsp error diagnostics (it's annoying in ocaml)
   (setq evil-normal-state-tag (propertize "NOR" 'face '(:background "blue" :foreground "white")))
   (setq evil-insert-state-tag (propertize "INS" 'face '(:background "blue" :foreground "white")))
   (setq evil-visual-state-tag (propertize "VIS" 'face '(:background "blue" :foreground "white"))))
@@ -176,9 +269,9 @@
                         :activation-fn (lsp-activate-on "ask")
                         :server-id 'ask)))
 
-(use-package corfu
-  :after lsp-mode
-  :config (global-corfu-mode))
+(use-package company
+  :init
+  (global-company-mode))
 
 (use-package format-all
   :commands (format-all-buffer format-all-buffers)
@@ -186,9 +279,14 @@
   (setq-default format-all-formatters '(("C" (clang-format))
                                         ("C++" (clang-format))
                                         ("Rust" (rustfmt))
-                                        ("OCaml" (ocamlformat))
-                                        ("Haskell" (ormolu))
-                                        ("Go" (gofmt)))))
+                                        ("OCaml" (ocamlformat)))))
+
+(use-package zig-mode
+  :mode "\\.zig\\'"
+  :config
+  (setq lsp-zig-zls-executable "~/.local/share/nvim/mason/bin/zls")
+  (setq lsp-zig-zig-exe-path "/snap/bin/zig")
+  (add-hook 'before-save-hook #'format-all-buffer))
 
 (use-package rust-mode
   :mode "\\.rs\\'"
@@ -204,14 +302,6 @@
   :after tuareg
   :config(merlin-mode))
 
-(use-package haskell-mode
-  :mode ("\\.hs\\'" . haskell-mode))
-
-(use-package lsp-haskell
-  :after haskell-mode)
-
-(use-package go-mode
-  :mode ("\\.go\\'" . go-mode))
 
 ;;
 ;; hooks
@@ -290,11 +380,13 @@
 ;; (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 (define-key evil-normal-state-map (kbd "a") 'evil-append-line)
 (define-key evil-normal-state-map (kbd "s") 'swiper)
-(define-key evil-normal-state-map (kbd ",") 'avy-goto-word-0)
+(define-key evil-normal-state-map (kbd "t") 'avy-goto-word-0)
 (define-key evil-normal-state-map (kbd "f") (lambda() (interactive)(avy-goto-word-0 nil (line-beginning-position) (line-end-position))))
-(define-key evil-normal-state-map (kbd "t") 'avy-goto-char-timer)
+(define-key evil-normal-state-map (kbd ",") 'avy-goto-char-timer)
 (define-key evil-normal-state-map (kbd "]d") 'flymake-goto-next-error)
 (define-key evil-normal-state-map (kbd "[d") 'flymake-goto-prev-error)
+(define-key evil-normal-state-map (kbd "C-j") 'evil-scroll-down)
+(define-key evil-normal-state-map (kbd "C-k") 'evil-scroll-up)
 
 (define-key evil-normal-state-map (kbd "K") 'lsp-describe-thing-at-point)
 
@@ -308,26 +400,18 @@
   "f" 'projectile-find-file
   "k" 'kill-buffer
   "t" 'tab-bar-new-tab
-  "o" 'projectile-find-file
+  "o" 'delete-other-windows
   "c" 'comment-line)
 
-;; what the hecc is this?
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(adaptive-wrap avy beacon corfu counsel doom-modeline evil-leader
-                   evil-surround fill-column-indicator format-all
-                   go-mode haskell-mode highlight-indent-guides
-                   ivy-prescient ivy-rich lsp-haskell meow merlin
-                   no-littering pomodoro projectile punpun-themes
-                   quasi-monochrome-theme rust-mode tuareg which-key
-                   yasnippet)))
+ '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:background nil)))))
+ )
