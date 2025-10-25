@@ -28,6 +28,8 @@ return {
 			--  the list of additional_vim_regex_highlighting and disabled languages for indent.
 			additional_vim_regex_highlighting = { "ruby" },
 		},
-		indent = { enable = true, disable = { "ruby" } },
+		-- WARN: Indentation provided by treesitter is horrible.
+		-- It is better to disable it and use neovim's auto/smart indent.
+		indent = { enable = false, disable = { "ruby" } },
 	},
 }
