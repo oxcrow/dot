@@ -3,6 +3,9 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- Enable filetype detection.
+vim.o.filetype = "on"
+
 -- Do we use nerd font?
 vim.g.have_nerd_font = true
 
@@ -24,9 +27,14 @@ vim.o.shiftwidth = 4
 
 -- Set tabstop at.
 vim.o.tabstop = 4
+vim.o.softtabstop = 4
 
 -- Enable break indent.
 vim.o.breakindent = true
+
+-- Enable smart auto-indent so we don't shift right.
+vim.o.autoindent = true
+vim.o.smartindent = true
 
 -- Save undo history.
 vim.o.undofile = true
@@ -69,10 +77,18 @@ vim.o.cursorline = false
 vim.o.confirm = true
 
 -- Show a column marker.
-vim.o.colorcolumn = "70,80,100"
+vim.o.colorcolumn = "80,100"
 
 -- Set textwidth so comments can be reflowed easily.
-vim.o.textwidth = 70
+vim.o.textwidth = 80
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 10
+
+-- Set neovim filetypes based on extension
+vim.filetype.add({
+	pattern = {
+		[".gitconfig"] = "gitconfig",
+		[".*.nxn"] = "javascript",
+	},
+})

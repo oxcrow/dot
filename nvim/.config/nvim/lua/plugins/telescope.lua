@@ -5,6 +5,7 @@ return {
 	config = function()
 		local builtin = require("telescope.builtin")
 		-- Keymaps (add to your keymap setup or here)
+		vim.keymap.set("n", "s", builtin.current_buffer_fuzzy_find, { desc = "[S]earch in current buffer" })
 		vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find Files" })
 		vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Find files with Grep" })
 		vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find files in Buffers" })

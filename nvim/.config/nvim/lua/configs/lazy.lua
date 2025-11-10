@@ -21,6 +21,7 @@ require("lazy").setup({
 		-- Import everything from plugins/ folder.
 		-- Basically this treats every lua file inside plugins/ folder as a plugin.
 		{ import = "plugins" },
+		{ import = "colors" },
 	},
 	-- Configure any other settings here. See the documentation for more details.
 	-- colorscheme that will be used when installing plugins.

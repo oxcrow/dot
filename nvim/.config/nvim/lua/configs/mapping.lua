@@ -66,4 +66,4 @@ vim.keymap.set("v", "w", "<esc>wviw", { silent = true })
 vim.keymap.set("n", "<leader>e", ":Neotree<cr>", { silent = true })
 
 -- Open new tab
-vim.keymap.set("n", "<leader>t", ":tabnew<cr>", { silent = true })
+vim.keymap.set("n", "<leader>t", ":tabnew<cr>", { noremap = true, silent = true })
