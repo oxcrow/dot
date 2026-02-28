@@ -12,9 +12,17 @@ return {
 		-- My personal keymaps
 		vim.keymap.set("n", "<F3>", builtin.find_files, { desc = "Find Files" })
 		vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "Find files in Buffers" })
+		-- NOTE: DO NOT FORGET TO INSTALL RIPGREP (RG)!
+		-- OTHERWISE THE BITCH ASS FILE FINDER WILL POLLUTE YOUR SEARCHES WITH .GITIGNORED FILES!
 		require("telescope").setup({
 			defaults = {
-				file_ignore_patterns = { ".git/", "build/", "zig-build/", "target/" },
+				file_ignore_patterns = {
+					".git/",
+					"build/",
+					".zig-cache/",
+					"zig-out/",
+					"target/",
+				},
 			},
 		})
 	end,

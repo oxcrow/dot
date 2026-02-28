@@ -4,11 +4,13 @@ return {
 	priority = 1000,
 	config = function()
 		require("catppuccin").setup({
+			styles = {
+				keywords = { "italic" },
+			},
 			color_overrides = {
 				all = {},
 				latte = {
-					base = "#ffffff",
-
+					base = "#deded1",
 					text = "#1b1212",
 
 					rosewater = "#000000",
@@ -19,10 +21,13 @@ return {
 					maroon = "#000000",
 					peach = "#000000",
 					yellow = "#2986cc",
-					green = "#9ae630",
+					-- green = "#706d54",
+					green = "#696969",
 					sapphire = "#000000",
-					blue = "#1f51ff",
-					lavender = "#5b6cca",
+					-- blue = "#1f51ff",
+					-- blue = "#1a2ca3",
+					blue = "#2845d6",
+					lavender = "#000000",
 					sky = "#000000",
 				},
 				frappe = {},
@@ -33,15 +38,18 @@ return {
 				latte = function(colors)
 					return {
 						["@function"] = { fg = colors.blue },
-						["@type"] = { fg = colors.blue },
-						["@constructor"] = { fg = colors.blue },
-						["@module"] = { fg = colors.blue },
-						["@string"] = { fg = colors.pink },
-						["@keyword"] = { fg = colors.blue },
+						["@type"] = { fg = colors.text },
+						["@constructor"] = { fg = colors.text },
+						["@module"] = { fg = colors.text },
+						["@string"] = { fg = colors.blue },
+						["@keyword"] = { fg = colors.green },
 						["@variable"] = { fg = colors.text },
 						["@constant"] = { fg = colors.text },
 					}
 				end,
+			},
+			integrations = {
+				treesitter = true,
 			},
 		})
 	end,

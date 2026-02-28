@@ -1,10 +1,19 @@
 -- Set theme mode by force
-local force_light_mode = true
+local mode = 1
+local force_light_mode = false
 local force_dark_mode = false
 
 -- Set common themes
 local light_theme = "catppuccin"
 local dark_theme = "sunbather"
+
+if mode == 0 then
+	force_light_mode = false
+	force_dark_mode = true
+else
+	force_light_mode = true
+	force_dark_mode = false
+end
 
 if force_light_mode then
 	print("light")

@@ -27,6 +27,10 @@ vim.keymap.set("i", "<F14>", "<esc><cmd>wa<cr>", { silent = true })
 vim.keymap.set("i", "<F12>", "<esc><cmd>bd<cr>", { silent = true })
 vim.keymap.set("n", "<F12>", "<esc><cmd>bd<cr>", { silent = true })
 
+-- Close buffer easily by pressing <S-F12> in normal and insert mode
+vim.keymap.set("i", "<F24>", "<esc><cmd>bd<cr>", { silent = true })
+vim.keymap.set("n", "<F24>", "<esc><cmd>bd<cr>", { silent = true })
+
 -- Close all buffers by pressing <C-F12> in normal and insert mode
 vim.keymap.set("i", "<F36>", "<esc><cmd>qa!<cr>", { silent = true })
 vim.keymap.set("n", "<F36>", "<esc><cmd>qa!<cr>", { silent = true })
