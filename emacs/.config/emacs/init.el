@@ -1,15 +1,14 @@
 ;;
 ;; basic configuration
 ;;
-(setq-default oxcrow-editing-mode 0) ; 0 for evil, 1 for meow
+(setq-default editing-mode 0) ; 0 for evil, 1 for meow
 
 ;;
 ;; mode agnostic functions
 ;;
 
-(defun oxcrow-normal-state ()
-  (if (eq oxcrow-editing-mode 0) (evil-normal-state) (meow-normal-mode)))
-
+(defun normal-state ()
+  (if (eq editing-mode 0) (evil-normal-state) (meow-normal-mode)))
 
 ;; set global keys
 ;; we do this at the beginning so in case we mess up our emac config
@@ -18,7 +17,7 @@
 (global-set-key (kbd "S-<f12>") 'tab-bar-close-tab)
 (global-set-key (kbd "C-<f12>") 'kill-emacs)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-(global-set-key (kbd "<f2>") (lambda() (interactive) (oxcrow-normal-state)(save-buffer)(delete-other-windows)))
+(global-set-key (kbd "<f2>") (lambda() (interactive) (normal-state)(save-buffer)))
 (global-set-key (kbd "<f3>") 'projectile-find-file)
 (global-set-key (kbd "<f7>") 'tab-bar-switch-to-prev-tab)
 (global-set-key (kbd "<f8>") 'tab-bar-switch-to-next-tab)
@@ -34,7 +33,7 @@
 (load-theme 'leuven)
 
 ;; set cursor
-(global-hl-line-mode 1) ; highlight current line
+(global-hl-line-mode 0) ; highlight current line
 
 ;; set line numbers
 (column-number-mode) ; show column number in mode line
@@ -125,7 +124,7 @@
   (setq evil-want-C-u-scroll t)
   (setq evil-want-fine-undo t)
   :config
-  (evil-mode (if (eq oxcrow-editing-mode 0) 1 0)))
+  (evil-mode (if (eq editing-mode 0) 1 0)))
 
 (use-package meow)
 (defun meow-setup ()
@@ -212,7 +211,7 @@
    '("<escape>" . ignore)))
 (require 'meow)
 (meow-setup)
-(meow-global-mode (if (eq oxcrow-editing-mode 1) 1 0))
+(meow-global-mode (if (eq editing-mode 1) 1 0))
 
 (use-package evil-leader
   :after evil
@@ -257,7 +256,7 @@
   :commands (projectile-find-file))
 
 (use-package lsp-mode
-  :hook ((zig-mode rust-mode c-mode c++-mode tuareg-mode) . lsp-deferred)
+  :hook ((zig-mode rust-mode c-mode c++-mode tuareg-mode go-mode) . lsp-deferred)
   :commands (lsp lsp-deferred)
   :config
   (setq lsp-headerline-breadcrumb-enable nil)  ;; disable ugly breadcumb headerline
@@ -312,6 +311,12 @@
 (use-package merlin
   :after tuareg
   :config(merlin-mode))
+
+(add-to-list 'exec-path "~/.local/share/nvim/mason/bin")
+(use-package go-mode
+  :mode ("\\.go\\'" . go-mode)
+  :config
+  (add-hook 'before-save-hook #'format-all-buffer))
 
 ;;
 ;; hooks
