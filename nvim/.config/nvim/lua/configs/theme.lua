@@ -16,13 +16,14 @@ else
 end
 
 if force_light_mode then
-	print("light")
 	vim.o.background = "light"
 	vim.cmd.colorscheme(light_theme)
+	-- local white = "#f0f0f0"
+	-- vim.api.nvim_set_hl(0, "Normal", { bg = white })
+	-- vim.api.nvim_set_hl(0, "NormalNC", { bg = white })
 end
 
 if force_dark_mode then
-	print("dark")
 	vim.o.background = "dark"
 	vim.cmd.colorscheme(dark_theme)
 end

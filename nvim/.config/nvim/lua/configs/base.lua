@@ -3,6 +3,9 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+--  Blink cursor in all modes, so it looks pretty, an' shieet.
+vim.o.guicursor = "a:blinkwait700-blinkon400-blinkoff250"
+
 -- Enable filetype detection.
 vim.o.filetype = "on"
 
@@ -90,5 +93,6 @@ vim.filetype.add({
 	pattern = {
 		[".gitconfig"] = "gitconfig",
 		[".*.nxn"] = "javascript",
+		[".*.no"] = "javascript",
 	},
 })

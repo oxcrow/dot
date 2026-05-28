@@ -7,6 +7,10 @@ return {
 		{ "<leader>o", "<cmd>OutlineClose<cr><cmd>Outline<cr>", desc = "Toggle outline" },
 	},
 	opts = {
+		outline_window = {
+			position = "left",
+			width = 20,
+		},
 		symbol_folding = {
 			markers = { ">", "v" },
 		},

@@ -280,8 +280,7 @@
                         :server-id 'ask)))
 
 (use-package company
-  :init
-  (global-company-mode))
+  :init (global-company-mode))
 
 (use-package format-all
   :commands (format-all-buffer format-all-buffers)

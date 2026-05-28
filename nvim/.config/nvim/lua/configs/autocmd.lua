@@ -6,6 +6,16 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-	pattern = "*.nxn",
+	pattern = "*.no",
 	command = "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4",
+})
+
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+	pattern = { "*.c", "*.h" },
+	command = "setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4",
+})
+
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+	pattern = { "*.l", "*.y" },
+	command = "setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4 syntax=c",
 })

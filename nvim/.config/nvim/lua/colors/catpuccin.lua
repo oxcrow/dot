@@ -11,7 +11,8 @@ return {
 				all = {},
 				latte = {
 					base = "#deded1",
-					text = "#1b1212",
+					-- text = "#1b1212",
+					text = "#212529",
 
 					rosewater = "#000000",
 					flamingo = "#000000",
@@ -42,7 +43,7 @@ return {
 						["@constructor"] = { fg = colors.text },
 						["@module"] = { fg = colors.text },
 						["@string"] = { fg = colors.blue },
-						["@keyword"] = { fg = colors.green },
+						["@keyword"] = { fg = colors.text },
 						["@variable"] = { fg = colors.text },
 						["@constant"] = { fg = colors.text },
 					}
