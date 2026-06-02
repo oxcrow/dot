@@ -19,3 +19,12 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 	pattern = { "*.l", "*.y" },
 	command = "setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4 syntax=c",
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "h", "c", "hh", "cc", "cpp" },
+	callback = function()
+		vim.opt_local.conceallevel = 2
+		vim.opt_local.concealcursor = "nv"
+		vim.cmd([[syntax match ArrowConceal "->" conceal cchar=. ]])
+	end,
+})
