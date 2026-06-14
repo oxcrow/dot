@@ -131,6 +131,12 @@ return {
 			end,
 		})
 
+		-- Add LSP for OCaml
+		local lspconfig = require("lspconfig")
+		lspconfig.ocamllsp.setup({
+			-- Leaving empty is enough?
+		})
+
 		-- Diagnostic Config
 		-- See :help vim.diagnostic.Opts
 		vim.diagnostic.config({
