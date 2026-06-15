@@ -28,3 +28,12 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.cmd([[syntax match ArrowConceal "->" conceal cchar=. ]])
 	end,
 })
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+	pattern = { "*.f90", "*.f", "*.for", "*.f95", "*.F90" },
+	callback = function()
+		local cursor = vim.api.nvim_win_get_cursor(0)
+		vim.api.nvim_command("%!fprettify --silent --indent=4 --whitespace=2 --strip-comments")
+		pcall(vim.api.nvim_win_set_cursor, 0, cursor) -- So editor doesn't crash
+	end,
+})

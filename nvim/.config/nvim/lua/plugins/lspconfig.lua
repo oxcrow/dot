@@ -136,6 +136,9 @@ return {
 		lspconfig.ocamllsp.setup({
 			-- Leaving empty is enough?
 		})
+		lspconfig.fortls.setup({
+			single_file_support = true,
+		})
 
 		-- Diagnostic Config
 		-- See :help vim.diagnostic.Opts
